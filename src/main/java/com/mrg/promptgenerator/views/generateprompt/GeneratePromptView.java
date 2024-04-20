@@ -20,44 +20,54 @@ import java.util.ArrayList;
 import java.util.List;
 
 @PageTitle("Generate Prompt")
-@Route(value = "my-view", layout = MainLayout.class)
+@Route(value = "generate-prompt", layout = MainLayout.class)
 @RouteAlias(value = "", layout = MainLayout.class)
 @AnonymousAllowed
 @Uses(Icon.class)
 public class GeneratePromptView extends Composite<VerticalLayout> {
 
     public GeneratePromptView() {
+
         FormLayout formLayout3Col = new FormLayout();
-        ComboBox comboBox = new ComboBox();
-        ComboBox comboBox2 = new ComboBox();
-        TextArea textArea = new TextArea();
-        Button buttonPrimary = new Button();
-        Paragraph textMedium = new Paragraph();
-        getContent().setWidth("100%");
-        getContent().getStyle().set("flex-grow", "1");
         formLayout3Col.setWidth("100%");
-        formLayout3Col.setResponsiveSteps(new ResponsiveStep("0", 1), new ResponsiveStep("250px", 2),
-                new ResponsiveStep("500px", 3));
-        comboBox.setLabel("Resource");
-        comboBox.setWidth("min-content");
-        setComboBoxSampleData(comboBox);
-        comboBox2.setLabel("Category");
-        comboBox2.setWidth("min-content");
-        setComboBoxSampleData(comboBox2);
-        textArea.setLabel("Customize your prompts by providing a context.");
-        textArea.setWidth("100%");
-        buttonPrimary.setText("Generate Prompt");
-        buttonPrimary.setWidth("min-content");
-        buttonPrimary.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        textMedium.setText(
-                "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.");
+        formLayout3Col.setResponsiveSteps(
+                new ResponsiveStep("0", 1),
+                new ResponsiveStep("250px", 2),
+                new ResponsiveStep("500px", 3)
+        );
+
+        ComboBox resourceComboBox = new ComboBox();
+        resourceComboBox.setLabel("Resource");
+        resourceComboBox.setWidth("min-content");
+        setComboBoxSampleData(resourceComboBox);
+
+        ComboBox categoryComboBox = new ComboBox();
+        categoryComboBox.setLabel("Category");
+        categoryComboBox.setWidth("min-content");
+        setComboBoxSampleData(categoryComboBox);
+
+        formLayout3Col.add(categoryComboBox);
+        formLayout3Col.add(resourceComboBox);
+
+        TextArea customizePromptTextArea = new TextArea();
+        customizePromptTextArea.setLabel("Customize your prompts by providing a context.");
+        customizePromptTextArea.setWidth("100%");
+
+        Button generatePromptButton = new Button();
+        generatePromptButton.setText("Generate Prompt");
+        generatePromptButton.setWidth("min-content");
+        generatePromptButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+
+        Paragraph textMedium = new Paragraph();
+        textMedium.setText("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.");
         textMedium.setWidth("100%");
         textMedium.getStyle().set("font-size", "var(--lumo-font-size-m)");
+
+        getContent().setWidth("100%");
+        getContent().getStyle().set("flex-grow", "1");
         getContent().add(formLayout3Col);
-        formLayout3Col.add(comboBox);
-        formLayout3Col.add(comboBox2);
-        getContent().add(textArea);
-        getContent().add(buttonPrimary);
+        getContent().add(customizePromptTextArea);
+        getContent().add(generatePromptButton);
         getContent().add(textMedium);
     }
 
