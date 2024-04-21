@@ -1,5 +1,6 @@
 package com.mrg.promptgenerator.views.generateprompt;
 
+import com.mrg.promptgenerator.data.SampleItem;
 import com.mrg.promptgenerator.services.GeneratePromptService;
 import com.mrg.promptgenerator.views.MainLayout;
 import com.vaadin.flow.component.Composite;
@@ -81,7 +82,7 @@ public class GeneratePromptView extends Composite<VerticalLayout> {
 
         String promptResponse = "";
         generatePromptButton.addClickListener(clickEvent -> {
-            textMedium.setText(promptService.generatePrompt(categoryComboBox.getValue(), moodComboBox.getValue(), purposeComboBox.getValue(), customizePromptTextArea.getValue()));
+            textMedium.setText(promptService.generatePrompt((SampleItem) categoryComboBox.getValue(), (SampleItem) moodComboBox.getValue(), (SampleItem) purposeComboBox.getValue(), customizePromptTextArea.getValue()));
         });
 
 

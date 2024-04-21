@@ -3,25 +3,29 @@ package com.mrg.promptgenerator.services;
 
 import com.mrg.promptgenerator.data.SampleItem;
 import com.vaadin.flow.component.combobox.ComboBox;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.ai.chat.ChatClient;
+import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.*;
 
 @Service
 public class GeneratePromptService {
 
+    private final ChatClient chatClient;
 
-
-    private final WebClient webClient;
-
-    public GeneratePromptService(WebClient webClient) {
-        this.webClient = webClient;
+    public GeneratePromptService(ChatClient chatClient) {
+        this.chatClient = chatClient;
     }
 
     public void fillCategoryData(ComboBox<SampleItem> categoryComboBox) {
         List<SampleItem> categories = new ArrayList<>();
+        categories.add(new SampleItem("SCIENCE", "Science", false));
+        categories.add(new SampleItem("TECHNOLOGY", "Technology", false));
+        categories.add(new SampleItem("ENGINEERING", "Engineering", false));
+        categories.add(new SampleItem("SOCIAL_MEDIA", "Social Media", false));
+        categories.add(new SampleItem("INTERNET", "Internet", false));
+        categories.add(new SampleItem("LITERATURE", "Literature", false));
         categories.add(new SampleItem("SCI_FI", "Science Fiction", false));
         categories.add(new SampleItem("FANTASY", "Fantasy", false));
         categories.add(new SampleItem("MYSTERY", "Mystery", false));
@@ -39,6 +43,7 @@ public class GeneratePromptService {
     public void fillMoodData(ComboBox<SampleItem> moodComboBox) {
         List<SampleItem> moods = new ArrayList<>();
         moods.add(new SampleItem("JOYFUL", "Joyful", false));
+        moods.add(new SampleItem("ACADEMIC", "Academic", false));
         moods.add(new SampleItem("MELANCHOLIC", "Melancholic", false));
         moods.add(new SampleItem("TENSE", "Tense", false));
         moods.add(new SampleItem("MYSTERIOUS", "Mysterious", false));
@@ -73,27 +78,15 @@ public class GeneratePromptService {
     }
 
 
-    public String generatePrompt(Object value, Object value1, Object value2, String value3) {
-        return "Test prompt is generated with data : " + value.toString() + " " + value1.toString() + " " + value2.toString();
-        //return this.generatePrompt(value.toString(), value1.toString(), value2.toString());
+    public String generatePrompt(SampleItem value1, SampleItem value2, SampleItem value3, String value4) {
+        return this.generatePrompt(value1.value(), value2.value(), value3.value());
     }
 
     private String generatePrompt(String category, String mood, String purpose) {
-        String prompt = "Create a " + category + " story with a " + mood + " mood, for the purpose of " + purpose + ".";
+        String prompt = "Create an example prompt for " + category + " with a " + mood + " mood, for the purpose of " + purpose + ".";
+        System.out.println("Prompt : " + prompt);
+        return chatClient.call(new Prompt(prompt)).getResult().getOutput().getContent();
 
-        return Objects.requireNonNull(webClient.post()
-                .uri("/chat/completions")
-                .bodyValue(buildRequestBody(prompt))
-                .retrieve()
-                .bodyToMono(String.class)
-                .block());
     }
 
-    private Map<String, Object> buildRequestBody(String prompt) {
-        Map<String, Object> data = new HashMap<>();
-        data.put("prompt", prompt);
-        data.put("max_tokens", 150);
-        data.put("temperature", 0.7);
-        return data;
-    }
 }
