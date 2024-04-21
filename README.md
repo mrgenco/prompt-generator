@@ -1,8 +1,6 @@
-# My App
+# Prompt Generator Application
 
-This project can be used as a starting point to create your own Vaadin application with Spring Boot.
-It contains all the necessary configuration and some placeholder files to get you started.
-
+The Prompt Generator is a full-stack web application designed to create tailored content prompts based on user-specified categories, moods, and purposes. This application is built using Vaadin Flow, leveraging its powerful UI components for a responsive user experience, and Spring AI for OpenAI integration.
 ## Running the application
 
 The project is a standard Maven project. To run it from the command line,
