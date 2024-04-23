@@ -7,19 +7,25 @@ import com.vaadin.flow.component.Composite;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
-import com.vaadin.flow.component.combobox.ComboBoxVariant;
 import com.vaadin.flow.component.dependency.Uses;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.formlayout.FormLayout.ResponsiveStep;
+import com.vaadin.flow.component.html.H1;
+import com.vaadin.flow.component.html.H3;
+import com.vaadin.flow.component.html.H4;
 import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.icon.Icon;
+import com.vaadin.flow.component.listbox.MultiSelectListBox;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.progressbar.ProgressBar;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouteAlias;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
+import com.vaadin.flow.theme.lumo.Lumo;
+import com.vaadin.flow.theme.lumo.LumoUtility;
+import org.springframework.ai.chat.prompt.Prompt;
 
 @PageTitle("Generate Prompt")
 @Route(value = "generate-prompt", layout = MainLayout.class)
@@ -30,45 +36,64 @@ public class GeneratePromptView extends Composite<VerticalLayout> {
 
     public GeneratePromptView(GeneratePromptService promptService) {
 
+        VerticalLayout verticalLayout = new VerticalLayout();
+
+        H4 generatePromptFormHeader = new H4("Design Your Prompt");
+        // Create ComboBoxes for category, mood, and purpose
         ComboBox categoryComboBox = addCategoryComboBox(promptService);
-
         ComboBox moodComboBox = addMoodComboBox(promptService);
-
         ComboBox purposeComboBox = addPurposeComboBox(promptService);
 
+        // Create FormLayout
         FormLayout formLayout = createFormLayout(categoryComboBox, moodComboBox, purposeComboBox);
 
+        // TextArea for custom prompt
         TextArea customizePromptTextArea = addCustomizePrompt();
 
-
-        Paragraph textMedium = new Paragraph();
-        textMedium.setText("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.");
-        textMedium.setWidth("100%");
+        // Other components
+        Paragraph textMedium = new Paragraph("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.");
         textMedium.getStyle().set("font-size", "var(--lumo-font-size-m)");
+
+        H4 examplePrompts = new H4("Example Prompts");
+        MultiSelectListBox<String> listBox = new MultiSelectListBox<>();
+        listBox.setItems("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+                "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+                "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+                "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+                "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.");
 
         Button generatePromptButton = new Button();
         generatePromptButton.setText("Generate Prompt");
         generatePromptButton.setWidth("min-content");
         generatePromptButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        generatePromptButton.addThemeVariants(ButtonVariant.LUMO_LARGE);
         generatePromptButton.setDisableOnClick(true);
+
+        verticalLayout.add(generatePromptFormHeader, formLayout, customizePromptTextArea, generatePromptButton);
+        verticalLayout.addClassNames(LumoUtility.BoxShadow.MEDIUM, LumoUtility.Background.BASE);
+
+        VerticalLayout verticalLayout2 = new VerticalLayout();
+        verticalLayout2.addClassName("generate-prompt-view-vertical-layout-1");
+        verticalLayout2.add(examplePrompts);
+        verticalLayout2.add(listBox);
+        verticalLayout2.addClassNames(LumoUtility.BoxShadow.MEDIUM, LumoUtility.Background.BASE);
+
         generatePromptButton.addClickListener(clickEvent -> {
             textMedium.setText(promptService.generatePrompt((SampleItem) categoryComboBox.getValue(), (SampleItem) moodComboBox.getValue(), (SampleItem) purposeComboBox.getValue(), customizePromptTextArea.getValue()));
             generatePromptButton.setEnabled(true);
         });
+        // Create HorizontalLayout to hold form and text area
+        HorizontalLayout formAndCustomTextLayout = new HorizontalLayout();
+        formAndCustomTextLayout.setWidth("100%");
+        formAndCustomTextLayout.add(verticalLayout, verticalLayout2);
+        formAndCustomTextLayout.setFlexGrow(2, verticalLayout);
+        formAndCustomTextLayout.setFlexGrow(1, verticalLayout2);
 
+        // Adding components to the main layout
         getContent().setWidth("100%");
         getContent().getStyle().set("flex-grow", "1");
-        getContent().add(formLayout);
-        getContent().add(customizePromptTextArea);
-        getContent().add(generatePromptButton);
-        getContent().add(textMedium);
-
-
-
-
-
+        getContent().add(formAndCustomTextLayout);
     }
+
 
     private static TextArea addCustomizePrompt() {
         TextArea customizePromptTextArea = new TextArea();

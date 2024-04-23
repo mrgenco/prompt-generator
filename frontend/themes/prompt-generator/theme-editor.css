@@ -2,4 +2,8 @@
  * This file has been created by the Vaadin Theme Editor. Please note that
  * manual changes to individual CSS properties may be overwritten by the theme editor.
  */
-
+vaadin-vertical-layout.generate-prompt-view-vertical-layout-1 {
+  background-color:rgba(0,123,224,0);
+  border-color:rgba(25,84,173,0.9);
+  border-radius:var(--lumo-border-radius-m);
+}
