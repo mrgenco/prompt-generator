@@ -4,6 +4,8 @@ import com.mrg.promptgenerator.data.User;
 import com.mrg.promptgenerator.security.AuthenticatedUser;
 import com.mrg.promptgenerator.views.authorprompt.AuthorPromptView;
 import com.mrg.promptgenerator.views.generateprompt.GeneratePromptView;
+import com.mrg.promptgenerator.views.home.DashboardView;
+import com.mrg.promptgenerator.views.settings.SettingsView;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
@@ -39,8 +41,8 @@ public class MainLayout extends AppLayout {
 
     private H2 viewTitle;
 
-    private AuthenticatedUser authenticatedUser;
-    private AccessAnnotationChecker accessChecker;
+    private final AuthenticatedUser authenticatedUser;
+    private final AccessAnnotationChecker accessChecker;
 
     public MainLayout(AuthenticatedUser authenticatedUser, AccessAnnotationChecker accessChecker) {
         this.authenticatedUser = authenticatedUser;
@@ -75,17 +77,28 @@ public class MainLayout extends AppLayout {
 
     private SideNav createNavigation() {
         SideNav nav = new SideNav();
+        if (accessChecker.hasAccess(GeneratePromptView.class)) {
+            nav.addItem(new SideNavItem("Dashboard", DashboardView.class,
+                    LineAwesomeIcon.HOME_SOLID.create()));
 
+        }
         if (accessChecker.hasAccess(GeneratePromptView.class)) {
             nav.addItem(new SideNavItem("Generate Prompt", GeneratePromptView.class,
                     LineAwesomeIcon.PENCIL_RULER_SOLID.create()));
 
         }
+
         if (accessChecker.hasAccess(AuthorPromptView.class)) {
             nav.addItem(
                     new SideNavItem("Author Prompt", AuthorPromptView.class, LineAwesomeIcon.USER_EDIT_SOLID.create()));
-
         }
+
+        if (accessChecker.hasAccess(SettingsView.class)) {
+            nav.addItem(
+                    new SideNavItem("Settings", SettingsView.class, LineAwesomeIcon.USER.create()));
+        }
+
+
 
         return nav;
     }
