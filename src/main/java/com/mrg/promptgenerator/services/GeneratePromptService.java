@@ -5,7 +5,11 @@ import com.mrg.promptgenerator.data.SampleItem;
 import com.vaadin.flow.component.combobox.ComboBox;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.ai.chat.ChatClient;
+import org.springframework.ai.chat.ChatResponse;
 import org.springframework.ai.chat.prompt.Prompt;
+import org.springframework.ai.chat.prompt.PromptTemplate;
+import org.springframework.ai.parser.ListOutputParser;
+import org.springframework.core.convert.support.DefaultConversionService;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -80,20 +84,27 @@ public class GeneratePromptService {
     }
 
 
-    public String generatePrompt(SampleItem category, SampleItem mood, SampleItem purpose, String context) {
-        StringBuilder promptBuilder = new StringBuilder();
-        promptBuilder.append("Create a great example prompt for a Large Language Model in ")
-                    .append(category.value())
-                    .append(" with a ")
-                    .append(mood.value())
-                    .append(" mood, for the purpose of ").append(purpose.value()).append(".");
-        if(StringUtils.isNotEmpty(context)){
-            promptBuilder.append("If a context is provided after ### delimeter, build your prompt around that context as well.")
-                    .append("Here is the context ### ").append(context);
-        }
-        System.out.println("Prompt : " + promptBuilder.toString());
-        return chatClient.call(new Prompt(promptBuilder.toString())).getResult().getOutput().getContent();
+    public List<String> generatePrompt(SampleItem category, SampleItem mood, SampleItem purpose, String context) {
 
+        StringBuilder promptBuilder = new StringBuilder();
+        var message = """
+                Create a great 3 best prompts for a Large Language Model in {category} with a {mood} mood, for the purpose of {purpose}
+                """;
+        promptBuilder.append(message);
+        if(StringUtils.isNotEmpty(context)){
+            promptBuilder.append("Build your prompt around the context provided after ## delimeter.")
+                    .append("Here is the context ##").append(context);
+        }
+        promptBuilder.append(". ###").append("{format}");
+
+        ListOutputParser outputParser = new ListOutputParser(new DefaultConversionService());
+        PromptTemplate promptTemplate = new PromptTemplate(promptBuilder.toString(), Map.of("category",category.value(),"mood",mood.value(), "purpose", purpose.value(),"format",outputParser.getFormat()));
+        Prompt prompt = promptTemplate.create();
+        ChatResponse chatResponse = chatClient.call(prompt);
+        System.out.println("Prompt : " + promptBuilder.toString());
+        List<String> response = outputParser.parse(chatResponse.getResult().getOutput().getContent());
+        response.forEach(System.out::println);
+        return response;
     }
 
 }

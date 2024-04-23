@@ -56,11 +56,6 @@ public class GeneratePromptView extends Composite<VerticalLayout> {
 
         H4 examplePrompts = new H4("Example Prompts");
         MultiSelectListBox<String> listBox = new MultiSelectListBox<>();
-        listBox.setItems("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-                "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-                "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-                "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-                "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.");
 
         Button generatePromptButton = new Button();
         generatePromptButton.setText("Generate Prompt");
@@ -78,7 +73,7 @@ public class GeneratePromptView extends Composite<VerticalLayout> {
         verticalLayout2.addClassNames(LumoUtility.BoxShadow.MEDIUM, LumoUtility.Background.BASE);
 
         generatePromptButton.addClickListener(clickEvent -> {
-            textMedium.setText(promptService.generatePrompt((SampleItem) categoryComboBox.getValue(), (SampleItem) moodComboBox.getValue(), (SampleItem) purposeComboBox.getValue(), customizePromptTextArea.getValue()));
+            listBox.setItems(promptService.generatePrompt((SampleItem) categoryComboBox.getValue(), (SampleItem) moodComboBox.getValue(), (SampleItem) purposeComboBox.getValue(), customizePromptTextArea.getValue()));
             generatePromptButton.setEnabled(true);
         });
         // Create HorizontalLayout to hold form and text area

@@ -20,7 +20,7 @@ import org.springframework.context.annotation.Bean;
  *
  */
 @SpringBootApplication
-@Theme(value = "prompt-generator", variant= Lumo.DARK)
+@Theme(value = "prompt-generator", variant= Lumo.LIGHT)
 public class Application implements AppShellConfigurator {
 
     public static void main(String[] args) {
